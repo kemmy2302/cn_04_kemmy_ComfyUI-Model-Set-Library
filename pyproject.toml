@@ -1,0 +1,21 @@
+[project]
+name = "cn-04-kemmy-comfyui-model-set-library"
+version = "0.1.0"
+description = "Reusable UNET, text encoder, VAE, and multi-LoRA presets for ComfyUI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "kemmy2302" }]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/kemmy2302/cn_04_kemmy_ComfyUI-Model-Set-Library"
+Documentation = "https://github.com/kemmy2302/cn_04_kemmy_ComfyUI-Model-Set-Library#readme"
+Issues = "https://github.com/kemmy2302/cn_04_kemmy_ComfyUI-Model-Set-Library/issues"
+
+[tool.comfy]
+PublisherId = "kemmy"
+DisplayName = "Kemmy Model Set Library"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
