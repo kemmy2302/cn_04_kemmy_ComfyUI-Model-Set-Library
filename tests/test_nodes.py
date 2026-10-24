@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from nodes import KemmyModelSetLibrary, parse_state, selected_profile
+from nodes import KemmyModelSetLibrary, first_saved_profile, parse_state, selected_profile
 
 
 class ModelSetTests(unittest.TestCase):
@@ -20,6 +20,24 @@ class ModelSetTests(unittest.TestCase):
     def test_missing_value_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "vae_name"):
             selected_profile(json.dumps({"current": {"unet_name": "u", "clip_name": "c", "clip_type": "krea2"}}))
+
+    def test_first_saved_profile_is_used_for_new_node(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            data = root / "kemmy_model_set_library"
+            data.mkdir()
+            expected = {"id": "first", "unet_name": "u", "clip_name": "c", "clip_type": "moss_image", "vae_name": "v"}
+            (data / "presets.json").write_text(json.dumps({"version": 1, "presets": [expected]}), encoding="utf-8")
+            old = sys.modules.get("folder_paths")
+            sys.modules["folder_paths"] = types.SimpleNamespace(get_user_directory=lambda: str(root))
+            try:
+                self.assertEqual(first_saved_profile(), expected)
+                self.assertEqual(selected_profile(json.dumps({"current": None})), expected)
+            finally:
+                if old is None: sys.modules.pop("folder_paths", None)
+                else: sys.modules["folder_paths"] = old
 
     def test_load_set_uses_standard_loaders_and_applies_enabled_loras(self):
         calls = []

@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 
 def parse_state(raw):
@@ -11,9 +12,24 @@ def parse_state(raw):
         return {}
 
 
+def first_saved_profile():
+    """Return the first shared preset when a newly-created node has no state yet."""
+    try:
+        import folder_paths
+
+        path = Path(folder_paths.get_user_directory()) / "kemmy_model_set_library" / "presets.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        presets = data.get("presets", []) if isinstance(data, dict) else []
+        return presets[0] if presets and isinstance(presets[0], dict) else None
+    except (ImportError, AttributeError, OSError, TypeError, ValueError, json.JSONDecodeError):
+        return None
+
+
 def selected_profile(raw):
     state = parse_state(raw)
     current = state.get("current")
+    if not isinstance(current, dict):
+        current = first_saved_profile()
     if not isinstance(current, dict):
         raise ValueError("Select or configure a model-set preset first.")
     required = ("unet_name", "clip_name", "clip_type", "vae_name")
@@ -42,6 +58,14 @@ class KemmyModelSetLibrary:
 
     @classmethod
     def IS_CHANGED(cls, state_json):
+        if not isinstance(parse_state(state_json).get("current"), dict):
+            try:
+                import folder_paths
+
+                path = Path(folder_paths.get_user_directory()) / "kemmy_model_set_library" / "presets.json"
+                return f"{state_json}:{path.stat().st_mtime_ns}"
+            except (ImportError, AttributeError, OSError):
+                pass
         return state_json
 
     def load_set(self, state_json):

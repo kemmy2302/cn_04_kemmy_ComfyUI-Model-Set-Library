@@ -42,12 +42,14 @@ https://github.com/kemmy2302/cn_04_kemmy_ComfyUI-Model-Set-Library
 
 ## Basic usage
 
-1. Choose a diffusion model, text encoder type/file, and VAE.
-2. Add zero or more LoRAs.
+1. Choose a diffusion model, text encoder, and VAE from their dropdown lists. The adjacent path fields remain editable for manual paths and newly added files.
+2. Add zero or more LoRAs, then choose each file from its dropdown or enter its path manually.
 3. Set each LoRA's model and CLIP strengths. Use `0` for CLIP strength when a LoRA should affect only the diffusion model.
 4. Click **Save preset**.
 5. Connect `model`, `clip`, and `vae` to the existing workflow.
 6. Select another preset with its radio button whenever a different production set is needed.
+
+When a newly added node has no selection and shared presets already exist, the first saved preset is selected automatically.
 
 ## Storage
 

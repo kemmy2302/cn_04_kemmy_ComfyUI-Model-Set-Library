@@ -1,6 +1,6 @@
 [project]
 name = "cn-04-kemmy-comfyui-model-set-library"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reusable UNET, text encoder, VAE, and multi-LoRA presets for ComfyUI"
 readme = "README.md"
 requires-python = ">=3.10"
